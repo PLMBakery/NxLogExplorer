@@ -34,5 +34,13 @@ If applicable, add screenshots to help explain your problem.
  - Browser [e.g. stock browser, safari]
  - Version [e.g. 22]
 
+ **Priority**
+What priority do you think this issue is? (P0 - Critical, P1 - High, P2 - Medium, P3 - Low, P4 - Lowest)
+- [ ] P0 - Critical
+- [ ] P1 - High
+- [ ] P2 - Medium
+- [ ] P3 - Low
+- [ ] P4 - Lowest
+
 **Additional context**
 Add any other context about the problem here.

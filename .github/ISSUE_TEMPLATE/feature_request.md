@@ -10,6 +10,14 @@ assignees: ''
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
+**Priority**
+What priority do you think this issue is? (P0 - Critical, P1 - High, P2 - Medium, P3 - Low, P4 - Lowest)
+- [ ] P0 - Critical
+- [ ] P1 - High
+- [ ] P2 - Medium
+- [ ] P3 - Low
+- [ ] P4 - Lowest
+
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
 
