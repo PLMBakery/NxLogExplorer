@@ -54,6 +54,8 @@ def parse_installation_info(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
         kits_section = False
+        customizations_section = False
+        modules_section = False
         toggles_section = False
 
         for i, line in enumerate(lines):
