@@ -1,4 +1,3 @@
-import tkinter as tk
 from gui import LogFileAnalyzerApp
 
 if __name__ == "__main__":
