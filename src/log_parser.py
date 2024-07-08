@@ -87,3 +87,26 @@ def parse_installation_info(file_path):
     install_info["Feature Toggles"] = "\n".join(install_info["Feature Toggles"])
 
     return list(install_info.items())
+
+def parse_tc_info(file_path):
+    # Dummy implementation for TC Info
+    return [("TC Attribute 1", "Value 1"), ("TC Attribute 2", "Value 2")]
+
+def parse_tc_integration_info(file_path):
+    tc_integration_info = []
+
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    tc_section = False
+    for line in lines:
+        if "Teamcenter Integration" in line:
+            tc_section = True
+        if tc_section:
+            if line.strip() == "":
+                continue  # Skip empty lines
+            tc_integration_info.append(line.strip())
+
+    # Grouping the parsed information
+    parsed_info = [("Teamcenter Integration", "\n".join(tc_integration_info))]
+    return parsed_info

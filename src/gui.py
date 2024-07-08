@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
 import os
-from log_parser import parse_system_info, parse_license_info, parse_performance_metrics, parse_installation_info
+from log_parser import parse_system_info, parse_license_info, parse_performance_metrics, parse_installation_info, parse_tc_info, parse_tc_integration_info  # Adding TC Integration parse function
 from exporter import export_to_excel
 
 class LogFileAnalyzerApp(tk.Tk):
@@ -40,6 +40,10 @@ class LogFileAnalyzerApp(tk.Tk):
         self.installation_info_button = tk.Button(self.button_frame, text="Installation Information", command=self.show_installation_info)
         self.installation_info_button.grid(row=0, column=3, padx=10, pady=10)
 
+        # Adding the new "TC Info" button
+        self.tc_info_button = tk.Button(self.button_frame, text="TC Info", command=self.show_tc_info)
+        self.tc_info_button.grid(row=1, column=0, padx=10, pady=10)
+
         cc_logo_path = os.path.join(os.path.dirname(__file__), '..', 'images', 'Cc-by-nc-sa_icon.png')
         if os.path.exists(cc_logo_path):
             cc_logo_image = Image.open(cc_logo_path)
@@ -52,8 +56,8 @@ class LogFileAnalyzerApp(tk.Tk):
             self.cc_logo_label = tk.Label(self.bottom_frame, image=self.cc_logo)
             self.cc_logo_label.pack(side=tk.LEFT)
 
-            self.copyright_label = tk.Label(self.bottom_frame, text="© Marc Weidner")
-            self.copyright_label.pack(side=tk.LEFT, padx=5)
+            copyright_text = "© Marc Weidner"
+            self.cc_logo_label.pack(side=tk.LEFT, padx=5)
 
     def select_log_file(self):
         self.file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
@@ -93,6 +97,30 @@ class LogFileAnalyzerApp(tk.Tk):
         installation_info = parse_installation_info(self.file_path)
         self.show_results(installation_info, "Installation Information")
 
+    def show_tc_info(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        # Open new window with additional buttons
+        self.show_tc_window()
+
+    def show_tc_window(self):
+        tc_window = Toplevel(self)
+        tc_window.title("TC Information")
+        tc_window.geometry("400x300")
+
+        tc_button = tk.Button(tc_window, text="TC Integration", command=self.show_tc_integration_info)
+        tc_button.pack(pady=10)
+
+    def show_tc_integration_info(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        tc_integration_info = parse_tc_integration_info(self.file_path)
+        self.show_results(tc_integration_info, "TC Integration Information")
+
     def show_results(self, info_list, title):
         result_window = Toplevel(self)
         result_window.title(title)
@@ -104,7 +132,7 @@ class LogFileAnalyzerApp(tk.Tk):
         result_frame = tk.Frame(result_window)
         result_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        # Hinzufügen einer Scrollbar und eines Text-Widgets für die Anzeige
+        # Adding a scrollbar and a text widget for display
         scrollbar = tk.Scrollbar(result_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -112,10 +140,10 @@ class LogFileAnalyzerApp(tk.Tk):
         text_widget.pack(fill=tk.BOTH, expand=True)
         scrollbar.config(command=text_widget.yview)
 
-        # Konfigurieren des Tags für fett gedruckten Text
+        # Configure the tag for bold text
         text_widget.tag_configure("bold", font=("Arial", 10, "bold"))
 
-        # Formatierung der Ergebnisse und Hinzufügen zum Text-Widget
+        # Formatting the results and adding to the text widget
         for attribute, value in info_list:
             text_widget.insert(tk.END, f"{attribute}:\n", "bold")
             text_widget.insert(tk.END, f"{value}\n\n")
