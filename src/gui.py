@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
 import os
-from log_parser import parse_system_info, parse_license_info, parse_performance_metrics, parse_installation_info, parse_tc_info, parse_tc_integration_info  # Adding TC Integration parse function
+from log_parser import parse_system_info, parse_license_info, parse_performance_metrics, parse_installation_info, parse_tc_info, parse_tc_integration_info, parse_tc_aw_variables, parse_tc_environment_data, parse_nx_info, parse_nx_config_info
 from exporter import export_to_excel
 
 class LogFileAnalyzerApp(tk.Tk):
@@ -44,6 +44,10 @@ class LogFileAnalyzerApp(tk.Tk):
         self.tc_info_button = tk.Button(self.button_frame, text="TC Info", command=self.show_tc_info)
         self.tc_info_button.grid(row=1, column=0, padx=10, pady=10)
 
+        # Adding the new "NX Info" button
+        self.nx_info_button = tk.Button(self.button_frame, text="NX Info", command=self.show_nx_info)
+        self.nx_info_button.grid(row=1, column=1, padx=10, pady=10)
+
         cc_logo_path = os.path.join(os.path.dirname(__file__), '..', 'images', 'Cc-by-nc-sa_icon.png')
         if os.path.exists(cc_logo_path):
             cc_logo_image = Image.open(cc_logo_path)
@@ -56,8 +60,10 @@ class LogFileAnalyzerApp(tk.Tk):
             self.cc_logo_label = tk.Label(self.bottom_frame, image=self.cc_logo)
             self.cc_logo_label.pack(side=tk.LEFT)
 
+            # Adding the copyright text label
             copyright_text = "© Marc Weidner"
-            self.cc_logo_label.pack(side=tk.LEFT, padx=5)
+            self.copyright_label = tk.Label(self.bottom_frame, text=copyright_text)
+            self.copyright_label.pack(side=tk.LEFT, padx=5)
 
     def select_log_file(self):
         self.file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
@@ -113,6 +119,13 @@ class LogFileAnalyzerApp(tk.Tk):
         tc_button = tk.Button(tc_window, text="TC Integration", command=self.show_tc_integration_info)
         tc_button.pack(pady=10)
 
+        tc_variables_button = tk.Button(tc_window, text="TC Variables", command=self.show_tc_aw_variables_info)
+        tc_variables_button.pack(pady=10)
+
+        # Adding the new "TC Environment Data" button
+        tc_environment_data_button = tk.Button(tc_window, text="TC Environment Data", command=self.show_tc_environment_data)
+        tc_environment_data_button.pack(pady=10)
+
     def show_tc_integration_info(self):
         if not hasattr(self, 'file_path') or not self.file_path:
             messagebox.showerror("No file selected", "Please select a log file first.")
@@ -121,10 +134,73 @@ class LogFileAnalyzerApp(tk.Tk):
         tc_integration_info = parse_tc_integration_info(self.file_path)
         self.show_results(tc_integration_info, "TC Integration Information")
 
+    def show_tc_aw_variables_info(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        tc_aw_variables_info = parse_tc_aw_variables(self.file_path)
+        self.show_results(tc_aw_variables_info, "TC Variables Information")
+
+    def show_tc_environment_data(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        tc_environment_data = parse_tc_environment_data(self.file_path)
+        self.show_results(tc_environment_data, "TC Environment Data")
+
+    def show_nx_info(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        # Open new window with additional buttons
+        self.show_nx_window()
+
+    def show_nx_window(self):
+        nx_window = Toplevel(self)
+        nx_window.title("NX Information")
+        nx_window.geometry("400x300")
+
+        nx_config_button = tk.Button(nx_window, text="NX Configuration Variables", command=self.show_nx_config_info)
+        nx_config_button.pack(pady=10)
+
+        nx_system_env_button = tk.Button(nx_window, text="NX System Environment Variables", command=self.show_nx_system_env_info)
+        nx_system_env_button.pack(pady=10)
+
+        nx_used_env_files_button = tk.Button(nx_window, text="NX used env files", command=self.show_nx_used_env_files_info)
+        nx_used_env_files_button.pack(pady=10)
+
+    def show_nx_config_info(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        nx_config_info = parse_nx_config_info(self.file_path)
+        self.show_results(nx_config_info, "NX Configuration Variables")
+
+    def show_nx_system_env_info(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        # Implement the parser and display logic for NX System Environment Variables here
+        # nx_system_env_info = parse_nx_system_env_info(self.file_path)
+        # self.show_results(nx_system_env_info, "NX System Environment Variables")
+
+    def show_nx_used_env_files_info(self):
+        if not hasattr(self, 'file_path') or not self.file_path:
+            messagebox.showerror("No file selected", "Please select a log file first.")
+            return
+
+        # Implement the parser and display logic for NX used env files here
+        # nx_used_env_files_info = parse_nx_used_env_files(self.file_path)
+        # self.show_results(nx_used_env_files_info, "NX used env files")
+
     def show_results(self, info_list, title):
         result_window = Toplevel(self)
         result_window.title(title)
-        result_window.iconbitmap(self._get_icon_path())
 
         title_label = tk.Label(result_window, text=title, font=("Arial", 16, "bold"))
         title_label.pack(pady=10)
@@ -148,7 +224,7 @@ class LogFileAnalyzerApp(tk.Tk):
             text_widget.insert(tk.END, f"{attribute}:\n", "bold")
             text_widget.insert(tk.END, f"{value}\n\n")
 
-        export_button = tk.Button(result_window, text="Export to Excel", command=lambda: export_to_excel(info_list, title))
+        export_button = tk.Button(result_window, text="Export to Excel", command=lambda: self.export_to_excel(info_list, title))
         export_button.pack(pady=10)
 
         result_window.update_idletasks()
@@ -156,6 +232,15 @@ class LogFileAnalyzerApp(tk.Tk):
 
     def _get_icon_path(self):
         return os.path.join(os.path.dirname(__file__), '..', 'images', 'logo.ico')
+
+    def export_to_excel(self, data, title):
+        import pandas as pd
+
+        with pd.ExcelWriter(f"{title}.xlsx") as writer:
+            df = pd.DataFrame(data, columns=["Key", "Value"])
+            df.to_excel(writer, sheet_name=title[:30])  # Sheet name max length is 31 characters
+
+        messagebox.showinfo("Export Successful", f"Data exported to {title}.xlsx")
 
 if __name__ == "__main__":
     app = LogFileAnalyzerApp()
