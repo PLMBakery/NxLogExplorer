@@ -8,14 +8,14 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
 from parser.log_parser import (
-    parse_tc_info, parse_tc_integration_info, parse_tc_aw_variables,
-    parse_tc_environment_data, parse_nx_info, parse_nx_config_info
+    parse_nx_info, parse_nx_config_info
 )
 from parser.exporter import export_to_excel
 from gui.sysinfo_gui import add_system_info_button  # Import the new function
 from gui.license_info_gui import add_license_info_button  # Import the new function
 from gui.performance_metrics_gui import add_performance_metrics_button  # Import the new function
 from gui.installation_info_gui import add_installation_info_button  # Import the new function
+from gui.tc_info_gui import add_tc_info_button  # Import the new function
 
 class LogFileAnalyzerApp(tk.Tk):
     def __init__(self):
@@ -44,9 +44,7 @@ class LogFileAnalyzerApp(tk.Tk):
         add_license_info_button(self.button_frame, self)  # Add the new button function
         add_performance_metrics_button(self.button_frame, self)  # Add the new button function
         add_installation_info_button(self.button_frame, self)  # Add the new button function
-
-        self.tc_info_button = tk.Button(self.button_frame, text="TC Info", command=self.show_tc_info)
-        self.tc_info_button.grid(row=1, column=0, padx=10, pady=10)
+        add_tc_info_button(self.button_frame, self)  # Add the new button function
 
         self.nx_info_button = tk.Button(self.button_frame, text="NX Info", command=self.show_nx_info)
         self.nx_info_button.grid(row=1, column=1, padx=10, pady=10)
@@ -72,51 +70,6 @@ class LogFileAnalyzerApp(tk.Tk):
         if self.file_path:
             self.file_entry.delete(0, tk.END)
             self.file_entry.insert(0, self.file_path)
-
-    def show_tc_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        self.show_tc_window()
-
-    def show_tc_window(self):
-        tc_window = Toplevel(self)
-        tc_window.title("TC Information")
-        tc_window.geometry("400x300")
-
-        tc_button = tk.Button(tc_window, text="TC Integration", command=self.show_tc_integration_info)
-        tc_button.pack(pady=10)
-
-        tc_variables_button = tk.Button(tc_window, text="TC Variables", command=self.show_tc_aw_variables_info)
-        tc_variables_button.pack(pady=10)
-
-        tc_environment_data_button = tk.Button(tc_window, text="TC Environment Data", command=self.show_tc_environment_data)
-        tc_environment_data_button.pack(pady=10)
-
-    def show_tc_integration_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        tc_integration_info = parse_tc_integration_info(self.file_path)
-        self.show_results(tc_integration_info, "TC Integration Information")
-
-    def show_tc_aw_variables_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        tc_aw_variables_info = parse_tc_aw_variables(self.file_path)
-        self.show_results(tc_aw_variables_info, "TC Variables Information")
-
-    def show_tc_environment_data(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        tc_environment_data = parse_tc_environment_data(self.file_path)
-        self.show_results(tc_environment_data, "TC Environment Data")
 
     def show_nx_info(self):
         if not hasattr(self, 'file_path') or not self.file_path:
