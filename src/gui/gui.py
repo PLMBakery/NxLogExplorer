@@ -8,12 +8,12 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
 from parser.exporter import export_to_excel
-from gui.sysinfo_gui import add_system_info_button  # Import the new function
-from gui.license_info_gui import add_license_info_button  # Import the new function
-from gui.performance_metrics_gui import add_performance_metrics_button  # Import the new function
-from gui.installation_info_gui import add_installation_info_button  # Import the new function
-from gui.tc_info_gui import add_tc_info_button  # Import the new function
-from gui.nx_info_gui import add_nx_info_button  # Import the new function
+from gui.sysinfo_gui import add_system_info_button
+from gui.license_info_gui import add_license_info_button
+from gui.performance_metrics_gui import add_performance_metrics_button
+from gui.installation_info_gui import add_installation_info_button
+from gui.tc_info_gui import add_tc_info_button
+from gui.nx_info_gui import add_nx_info_button
 
 class LogFileAnalyzerApp(tk.Tk):
     def __init__(self):
@@ -38,12 +38,12 @@ class LogFileAnalyzerApp(tk.Tk):
         self.button_frame = tk.Frame(self)
         self.button_frame.pack(pady=20)
 
-        add_system_info_button(self.button_frame, self)  # Add the new button function
-        add_license_info_button(self.button_frame, self)  # Add the new button function
-        add_performance_metrics_button(self.button_frame, self)  # Add the new button function
-        add_installation_info_button(self.button_frame, self)  # Add the new button function
-        add_tc_info_button(self.button_frame, self)  # Add the new button function
-        add_nx_info_button(self.button_frame, self)  # Add the new button function
+        add_system_info_button(self.button_frame, self)
+        add_license_info_button(self.button_frame, self)
+        add_performance_metrics_button(self.button_frame, self)
+        add_installation_info_button(self.button_frame, self)
+        add_tc_info_button(self.button_frame, self)
+        add_nx_info_button(self.button_frame, self)
 
         cc_logo_path = os.path.join(os.path.dirname(__file__), '..', 'images', 'Cc-by-nc-sa_icon.png')
         if os.path.exists(cc_logo_path):
