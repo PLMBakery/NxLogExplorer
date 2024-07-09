@@ -1,14 +1,18 @@
+# src/gui/gui.py
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
-import os
-from NxLogExplorer.log_parser import (
+from parser.log_parser import (
     parse_system_info, parse_license_info, parse_performance_metrics,
     parse_installation_info, parse_tc_info, parse_tc_integration_info,
     parse_tc_aw_variables, parse_tc_environment_data, parse_nx_info, parse_nx_config_info
 )
-from NxLogExplorer.exporter import export_to_excel
-
+from parser.exporter import export_to_excel
 
 class LogFileAnalyzerApp(tk.Tk):
     def __init__(self):
@@ -45,11 +49,9 @@ class LogFileAnalyzerApp(tk.Tk):
         self.installation_info_button = tk.Button(self.button_frame, text="Installation Information", command=self.show_installation_info)
         self.installation_info_button.grid(row=0, column=3, padx=10, pady=10)
 
-        # Adding the new "TC Info" button
         self.tc_info_button = tk.Button(self.button_frame, text="TC Info", command=self.show_tc_info)
         self.tc_info_button.grid(row=1, column=0, padx=10, pady=10)
 
-        # Adding the new "NX Info" button
         self.nx_info_button = tk.Button(self.button_frame, text="NX Info", command=self.show_nx_info)
         self.nx_info_button.grid(row=1, column=1, padx=10, pady=10)
 
@@ -65,7 +67,6 @@ class LogFileAnalyzerApp(tk.Tk):
             self.cc_logo_label = tk.Label(self.bottom_frame, image=self.cc_logo)
             self.cc_logo_label.pack(side=tk.LEFT)
 
-            # Adding the copyright text label
             copyright_text = "© Marc Weidner"
             self.copyright_label = tk.Label(self.bottom_frame, text=copyright_text)
             self.copyright_label.pack(side=tk.LEFT, padx=5)
@@ -113,7 +114,6 @@ class LogFileAnalyzerApp(tk.Tk):
             messagebox.showerror("No file selected", "Please select a log file first.")
             return
 
-        # Open new window with additional buttons
         self.show_tc_window()
 
     def show_tc_window(self):
@@ -127,7 +127,6 @@ class LogFileAnalyzerApp(tk.Tk):
         tc_variables_button = tk.Button(tc_window, text="TC Variables", command=self.show_tc_aw_variables_info)
         tc_variables_button.pack(pady=10)
 
-        # Adding the new "TC Environment Data" button
         tc_environment_data_button = tk.Button(tc_window, text="TC Environment Data", command=self.show_tc_environment_data)
         tc_environment_data_button.pack(pady=10)
 
@@ -160,7 +159,6 @@ class LogFileAnalyzerApp(tk.Tk):
             messagebox.showerror("No file selected", "Please select a log file first.")
             return
 
-        # Open new window with additional buttons
         self.show_nx_window()
 
     def show_nx_window(self):
@@ -190,18 +188,10 @@ class LogFileAnalyzerApp(tk.Tk):
             messagebox.showerror("No file selected", "Please select a log file first.")
             return
 
-        # Implement the parser and display logic for NX System Environment Variables here
-        # nx_system_env_info = parse_nx_system_env_info(self.file_path)
-        # self.show_results(nx_system_env_info, "NX System Environment Variables")
-
     def show_nx_used_env_files_info(self):
         if not hasattr(self, 'file_path') or not self.file_path:
             messagebox.showerror("No file selected", "Please select a log file first.")
             return
-
-        # Implement the parser and display logic for NX used env files here
-        # nx_used_env_files_info = parse_nx_used_env_files(self.file_path)
-        # self.show_results(nx_used_env_files_info, "NX used env files")
 
     def show_results(self, info_list, title):
         result_window = Toplevel(self)
@@ -213,7 +203,6 @@ class LogFileAnalyzerApp(tk.Tk):
         result_frame = tk.Frame(result_window)
         result_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        # Adding a scrollbar and a text widget for display
         scrollbar = tk.Scrollbar(result_frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -221,10 +210,8 @@ class LogFileAnalyzerApp(tk.Tk):
         text_widget.pack(fill=tk.BOTH, expand=True)
         scrollbar.config(command=text_widget.yview)
 
-        # Configure the tag for bold text
         text_widget.tag_configure("bold", font=("Arial", 10, "bold"))
 
-        # Formatting the results and adding to the text widget
         for attribute, value in info_list:
             text_widget.insert(tk.END, f"{attribute}:\n", "bold")
             text_widget.insert(tk.END, f"{value}\n\n")
@@ -243,7 +230,7 @@ class LogFileAnalyzerApp(tk.Tk):
 
         with pd.ExcelWriter(f"{title}.xlsx") as writer:
             df = pd.DataFrame(data, columns=["Key", "Value"])
-            df.to_excel(writer, sheet_name=title[:30])  # Sheet name max length is 31 characters
+            df.to_excel(writer, sheet_name=title[:30])
 
         messagebox.showinfo("Export Successful", f"Data exported to {title}.xlsx")
 
