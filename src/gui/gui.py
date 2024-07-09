@@ -7,15 +7,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
-from parser.log_parser import (
-    parse_nx_info, parse_nx_config_info
-)
 from parser.exporter import export_to_excel
 from gui.sysinfo_gui import add_system_info_button  # Import the new function
 from gui.license_info_gui import add_license_info_button  # Import the new function
 from gui.performance_metrics_gui import add_performance_metrics_button  # Import the new function
 from gui.installation_info_gui import add_installation_info_button  # Import the new function
 from gui.tc_info_gui import add_tc_info_button  # Import the new function
+from gui.nx_info_gui import add_nx_info_button  # Import the new function
 
 class LogFileAnalyzerApp(tk.Tk):
     def __init__(self):
@@ -45,9 +43,7 @@ class LogFileAnalyzerApp(tk.Tk):
         add_performance_metrics_button(self.button_frame, self)  # Add the new button function
         add_installation_info_button(self.button_frame, self)  # Add the new button function
         add_tc_info_button(self.button_frame, self)  # Add the new button function
-
-        self.nx_info_button = tk.Button(self.button_frame, text="NX Info", command=self.show_nx_info)
-        self.nx_info_button.grid(row=1, column=1, padx=10, pady=10)
+        add_nx_info_button(self.button_frame, self)  # Add the new button function
 
         cc_logo_path = os.path.join(os.path.dirname(__file__), '..', 'images', 'Cc-by-nc-sa_icon.png')
         if os.path.exists(cc_logo_path):
@@ -70,45 +66,6 @@ class LogFileAnalyzerApp(tk.Tk):
         if self.file_path:
             self.file_entry.delete(0, tk.END)
             self.file_entry.insert(0, self.file_path)
-
-    def show_nx_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        self.show_nx_window()
-
-    def show_nx_window(self):
-        nx_window = Toplevel(self)
-        nx_window.title("NX Information")
-        nx_window.geometry("400x300")
-
-        nx_config_button = tk.Button(nx_window, text="NX Configuration Variables", command=self.show_nx_config_info)
-        nx_config_button.pack(pady=10)
-
-        nx_system_env_button = tk.Button(nx_window, text="NX System Environment Variables", command=self.show_nx_system_env_info)
-        nx_system_env_button.pack(pady=10)
-
-        nx_used_env_files_button = tk.Button(nx_window, text="NX used env files", command=self.show_nx_used_env_files_info)
-        nx_used_env_files_button.pack(pady=10)
-
-    def show_nx_config_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        nx_config_info = parse_nx_config_info(self.file_path)
-        self.show_results(nx_config_info, "NX Configuration Variables")
-
-    def show_nx_system_env_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-    def show_nx_used_env_files_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
 
     def show_results(self, info_list, title):
         result_window = Toplevel(self)
