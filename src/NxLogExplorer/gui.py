@@ -2,8 +2,13 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
 import os
-from log_parser import parse_system_info, parse_license_info, parse_performance_metrics, parse_installation_info, parse_tc_info, parse_tc_integration_info, parse_tc_aw_variables, parse_tc_environment_data, parse_nx_info, parse_nx_config_info
-from exporter import export_to_excel
+from NxLogExplorer.log_parser import (
+    parse_system_info, parse_license_info, parse_performance_metrics,
+    parse_installation_info, parse_tc_info, parse_tc_integration_info,
+    parse_tc_aw_variables, parse_tc_environment_data, parse_nx_info, parse_nx_config_info
+)
+from NxLogExplorer.exporter import export_to_excel
+
 
 class LogFileAnalyzerApp(tk.Tk):
     def __init__(self):

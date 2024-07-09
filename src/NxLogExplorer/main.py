@@ -1,4 +1,4 @@
-from gui import LogFileAnalyzerApp
+from NxLogExplorer.gui import LogFileAnalyzerApp
 
 if __name__ == "__main__":
     app = LogFileAnalyzerApp()
