@@ -8,13 +8,14 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, Toplevel
 from PIL import Image, ImageTk
 from parser.log_parser import (
-    parse_performance_metrics, parse_installation_info,
     parse_tc_info, parse_tc_integration_info, parse_tc_aw_variables,
     parse_tc_environment_data, parse_nx_info, parse_nx_config_info
 )
 from parser.exporter import export_to_excel
 from gui.sysinfo_gui import add_system_info_button  # Import the new function
 from gui.license_info_gui import add_license_info_button  # Import the new function
+from gui.performance_metrics_gui import add_performance_metrics_button  # Import the new function
+from gui.installation_info_gui import add_installation_info_button  # Import the new function
 
 class LogFileAnalyzerApp(tk.Tk):
     def __init__(self):
@@ -41,12 +42,8 @@ class LogFileAnalyzerApp(tk.Tk):
 
         add_system_info_button(self.button_frame, self)  # Add the new button function
         add_license_info_button(self.button_frame, self)  # Add the new button function
-
-        self.performance_button = tk.Button(self.button_frame, text="Performance Metrics", command=self.show_performance_metrics)
-        self.performance_button.grid(row=0, column=2, padx=10, pady=10)
-
-        self.installation_info_button = tk.Button(self.button_frame, text="Installation Information", command=self.show_installation_info)
-        self.installation_info_button.grid(row=0, column=3, padx=10, pady=10)
+        add_performance_metrics_button(self.button_frame, self)  # Add the new button function
+        add_installation_info_button(self.button_frame, self)  # Add the new button function
 
         self.tc_info_button = tk.Button(self.button_frame, text="TC Info", command=self.show_tc_info)
         self.tc_info_button.grid(row=1, column=0, padx=10, pady=10)
@@ -75,22 +72,6 @@ class LogFileAnalyzerApp(tk.Tk):
         if self.file_path:
             self.file_entry.delete(0, tk.END)
             self.file_entry.insert(0, self.file_path)
-
-    def show_performance_metrics(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        performance_metrics = parse_performance_metrics(self.file_path)
-        self.show_results(performance_metrics, "Performance Metrics")
-
-    def show_installation_info(self):
-        if not hasattr(self, 'file_path') or not self.file_path:
-            messagebox.showerror("No file selected", "Please select a log file first.")
-            return
-
-        installation_info = parse_installation_info(self.file_path)
-        self.show_results(installation_info, "Installation Information")
 
     def show_tc_info(self):
         if not hasattr(self, 'file_path') or not self.file_path:
